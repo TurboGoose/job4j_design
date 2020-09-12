@@ -32,13 +32,12 @@ public class EvenNumbersIterator implements Iterator<Integer> {
             throw new NoSuchElementException();
         }
 
-        int nextElement = data[point++];
-        passOddNumbers();
-        return nextElement;
+        return data[point++];
     }
 
     @Override
     public boolean hasNext() {
+        passOddNumbers();
         return isPointInRange() &&  isEven(data[point]);
     }
 }
