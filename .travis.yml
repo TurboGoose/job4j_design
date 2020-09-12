@@ -9,7 +9,7 @@ after_success:
 
 notifications:
   email:
-    recipients: Ilya23like73@gmail.com
+    recipients: antonpuckich@gmail.com
     on_success: never
     on_failure: always
 
