@@ -10,16 +10,15 @@ public class MatrixIt  implements Iterator<Integer> {
 
     public MatrixIt(int[][] data) {
         this.data = data;
-        passEmptyRows();
     }
 
     @Override
     public boolean hasNext() {
-        if (data[row].length != 0 && column == data[row].length) {
-            nextRow();
-            passEmptyRows();
+        while (data.length > row && column == data[row].length) {
+            column = 0;
+            row++;
         }
-        return !(row == data.length - 1 && column == data[row].length);
+        return data.length > row && data[row].length > column;
     }
 
     @Override
@@ -28,16 +27,5 @@ public class MatrixIt  implements Iterator<Integer> {
             throw new NoSuchElementException();
         }
         return data[row][column++];
-    }
-
-    private void nextRow() {
-        row++;
-        column = 0;
-    }
-
-    private void passEmptyRows() {
-        while (row < data.length - 1 && data[row].length == 0) {
-            nextRow();
-        }
     }
 }
