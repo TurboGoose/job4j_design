@@ -40,10 +40,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
             @Override
             public boolean hasNext() {
-                try {
-                    return Objects.checkIndex(point, currentIndex) == point;
-                } catch (IndexOutOfBoundsException ignore) {}
-                return false;
+                return point < currentIndex;
             }
 
             @Override
