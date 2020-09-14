@@ -1,5 +1,6 @@
-package iterator;
+package generic;
 
+import generic.SimpleArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleArrayTest {
     @Test
     public void normalCase() {
-        SimpleArray<String> arr = new SimpleArray<>(3);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(3);
         arr.add("0");
         arr.add("1");
         arr.add("2");
@@ -28,25 +29,25 @@ class SimpleArrayTest {
 
     @Test
     public void zeroSize() {
-        SimpleArray<String> arr = new SimpleArray<>(0);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(0);
         assertThrows(IndexOutOfBoundsException.class, () -> arr.add("0"));
     }
 
     @Test
     public void negativeSize() {
-        assertThrows(NegativeArraySizeException.class, () -> new SimpleArray<>(-1));
+        assertThrows(NegativeArraySizeException.class, () -> new generic.SimpleArray<>(-1));
     }
 
     @Test
     public void arrayOverflow() {
-        SimpleArray<String> arr = new SimpleArray<>(1);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(1);
         arr.add("0");
         assertThrows(IndexOutOfBoundsException.class, () -> arr.add("1"));
     }
 
     @Test
     public void removeMoreElementsThanSize() {
-        SimpleArray<String> arr = new SimpleArray<>(1);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(1);
         arr.add("1");
         arr.remove(0);
         assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(0));
@@ -54,7 +55,7 @@ class SimpleArrayTest {
 
     @Test
     public void removeElementsOutOfBounds() {
-        SimpleArray<String> arr = new SimpleArray<>(2);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(2);
         assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(1));
         assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(0));
         arr.add("1");
@@ -64,7 +65,7 @@ class SimpleArrayTest {
 
     @Test
     public void setElementOutOfBounds() {
-        SimpleArray<String> arr = new SimpleArray<>(2);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(2);
         assertThrows(IndexOutOfBoundsException.class, () -> arr.set("1", 1));
         assertThrows(IndexOutOfBoundsException.class, () -> arr.set("0", 0));
         arr.add("0");
@@ -74,7 +75,7 @@ class SimpleArrayTest {
 
     @Test
     public void getElementOutOfBounds() {
-        SimpleArray<String> arr = new SimpleArray<>(2);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(2);
         assertThrows(IndexOutOfBoundsException.class, () -> arr.get(1));
         assertThrows(IndexOutOfBoundsException.class, () -> arr.get(0));
         arr.add("0");
@@ -84,7 +85,7 @@ class SimpleArrayTest {
 
     @Test
     public void iteratorNormalCase() {
-        SimpleArray<String> arr = new SimpleArray<>(3);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(3);
         arr.add("0");
         arr.add("1");
         arr.add("2");
@@ -99,7 +100,7 @@ class SimpleArrayTest {
 
     @Test
     public void iteratorOfEmptyArrayHasNext() {
-        SimpleArray<String> arr = new SimpleArray<>(0);
+        generic.SimpleArray<String> arr = new generic.SimpleArray<>(0);
         Iterator<String> it = arr.iterator();
         assertThat(it.hasNext(), is(false));
         assertThat(it.hasNext(), is(false));
@@ -108,7 +109,7 @@ class SimpleArrayTest {
 
     @Test
     public void iteratorNextAfterPassAllElements() {
-        SimpleArray<String> arr = new SimpleArray<>(1);
+        generic.SimpleArray<String> arr = new SimpleArray<>(1);
         arr.add("0");
         Iterator<String> it = arr.iterator();
         assertThat(it.hasNext(), is(true));
