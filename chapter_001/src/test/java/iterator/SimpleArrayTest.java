@@ -29,7 +29,7 @@ class SimpleArrayTest {
     @Test
     public void zeroSize() {
         SimpleArray<String> arr = new SimpleArray<>(0);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.add("0"));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.add("0"));
     }
 
     @Test
@@ -41,7 +41,7 @@ class SimpleArrayTest {
     public void arrayOverflow() {
         SimpleArray<String> arr = new SimpleArray<>(1);
         arr.add("0");
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.add("1"));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.add("1"));
     }
 
     @Test
@@ -49,36 +49,36 @@ class SimpleArrayTest {
         SimpleArray<String> arr = new SimpleArray<>(1);
         arr.add("1");
         arr.remove(0);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.remove(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(0));
     }
 
     @Test
     public void removeElementsOutOfBounds() {
         SimpleArray<String> arr = new SimpleArray<>(2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.remove(1));
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.remove(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(0));
         arr.add("1");
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.remove(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.remove(1));
         arr.remove(0);
     }
 
     @Test
     public void setElementOutOfBounds() {
         SimpleArray<String> arr = new SimpleArray<>(2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.set("1", 1));
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.set("0", 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.set("1", 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.set("0", 0));
         arr.add("0");
         arr.set("00", 0);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.set("11", 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.set("11", 1));
     }
 
     @Test
     public void getElementOutOfBounds() {
         SimpleArray<String> arr = new SimpleArray<>(2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.get(1));
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.get(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.get(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.get(0));
         arr.add("0");
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.get(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> arr.get(1));
         assertThat(arr.get(0), is("0"));
     }
 

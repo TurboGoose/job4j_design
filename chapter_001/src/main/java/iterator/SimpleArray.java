@@ -17,35 +17,21 @@ public class SimpleArray<T> implements Iterable<T> {
     }
 
     public T get(int index) {
-        if (!checkIndexInBounds(index)) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        Objects.checkIndex(index, currentIndex);
         return (T) data[index];
     }
 
     public void set(T value, int index) {
-        if (!checkIndexInBounds(index)) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        Objects.checkIndex(index, currentIndex);
         data[index] = value;
     }
 
     public void remove(int index) {
-        if (!checkIndexInBounds(index)) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        for (int i = index + 1; i < data.length; i++) {
-            data[i - 1] = data[i];
-        }
+        Objects.checkIndex(index, currentIndex);
+        System.arraycopy(data, index + 1, data, index, currentIndex - index - 1);
         currentIndex--;
     }
 
-    private boolean checkIndexInBounds(int index) {
-        try{
-            return Objects.checkIndex(index, currentIndex) == index;
-        } catch (IndexOutOfBoundsException ignored) {}
-        return false;
-    }
 
     @Override
     public Iterator<T> iterator() {
@@ -54,16 +40,18 @@ public class SimpleArray<T> implements Iterable<T> {
 
             @Override
             public boolean hasNext() {
-                return checkIndexInBounds(point);
+                try {
+                    return Objects.checkIndex(point, currentIndex) == point;
+                } catch (IndexOutOfBoundsException ignore) {}
+                return false;
             }
 
             @Override
             public T next() {
-                try {
-                    return get(point++);
-                } catch (IndexOutOfBoundsException exc) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
+                return (T) data[point++];
             }
         };
     }
