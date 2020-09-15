@@ -1,5 +1,6 @@
 package list;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ConcurrentModificationException;
@@ -11,70 +12,77 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleLinkedListTest {
-    SimpleArray<String> array = new SimpleArray<>();
+    private SimpleLinkedList<String> list = new SimpleLinkedList<>();
 
     @Test
     public void whenEmpty() {
-        assertThrows(IndexOutOfBoundsException.class, () -> array.get(0));
-        assertThrows(IndexOutOfBoundsException.class, () -> array.get(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(1));
     }
 
     @Test
     public void addElementsThenGetThemByIndices() {
-        array.add("zero");
-        array.add("one");
-        array.add("two");
-        assertThat(array.get(0), is("zero"));
-        assertThat(array.get(1), is("one"));
-        assertThat(array.get(2), is("two"));
+        list.add("zero");
+        list.add("one");
+        list.add("two");
+        list.add("four");
+        assertThat(list.get(0), is("zero"));
+        assertThat(list.get(1), is("one"));
+        assertThat(list.get(2), is("two"));
+        assertThat(list.get(3), is("four"));
     }
 
     @Test
     public void getByIndexOutOfBounds() {
-        array.add("zero");
-        assertThat(array.get(0), is("zero"));
-        assertThrows(IndexOutOfBoundsException.class, () -> array.get(1));
+        list.add("zero");
+        assertThat(list.get(0), is("zero"));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(1));
     }
 
     @Test
     public void getByNegativeIndex() {
-        assertThrows(IndexOutOfBoundsException.class, () -> array.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
     }
 
-    @Test
-    public void iteratorMultipleHasNextThenNextThenHasNext() {
-        array.add("zero");
-        Iterator<String> it = array.iterator();
-        assertThat(it.hasNext(), is(true));
-        assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is("zero"));
-        assertThat(it.hasNext(), is(false));
-        assertThat(it.hasNext(), is(false));
-    }
 
-    @Test
-    public void iteratorCallNextWhenElementsAreOver() {
-        array.add("zero");
-        Iterator<String> it = array.iterator();
-        assertThat(it.next(), is("zero"));
-        assertThrows(NoSuchElementException.class, it::next);
-    }
+    @Nested
+    class IteratorTests {
 
-    @Test
-    public void iteratorWhenEmpty() {
-        Iterator<String> it = array.iterator();
-        assertThat(it.hasNext(), is(false));
-        assertThrows(NoSuchElementException.class, it::next);
-    }
+        @Test
+        public void iteratorMultipleHasNextThenNextThenHasNext() {
+            list.add("zero");
+            Iterator<String> it = list.iterator();
+            assertThat(it.hasNext(), is(true));
+            assertThat(it.hasNext(), is(true));
+            assertThat(it.next(), is("zero"));
+            assertThat(it.hasNext(), is(false));
+            assertThat(it.hasNext(), is(false));
+        }
 
-    @Test
-    public void iteratorConcurrentModification() {
-        array.add("zero");
-        Iterator<String> it = array.iterator();
-        assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is("zero"));
-        array.add("one");
-        assertThrows(ConcurrentModificationException.class, it::hasNext);
-        assertThrows(ConcurrentModificationException.class, it::next);
+        @Test
+        public void iteratorCallNextWhenElementsAreOver() {
+            list.add("zero");
+            Iterator<String> it = list.iterator();
+            assertThat(it.next(), is("zero"));
+            assertThrows(NoSuchElementException.class, it::next);
+        }
+
+        @Test
+        public void iteratorWhenEmpty() {
+            Iterator<String> it = list.iterator();
+            assertThat(it.hasNext(), is(false));
+            assertThrows(NoSuchElementException.class, it::next);
+        }
+
+        @Test
+        public void iteratorConcurrentModification() {
+            list.add("zero");
+            Iterator<String> it = list.iterator();
+            assertThat(it.hasNext(), is(true));
+            assertThat(it.next(), is("zero"));
+            list.add("one");
+            assertThrows(ConcurrentModificationException.class, it::hasNext);
+            assertThrows(ConcurrentModificationException.class, it::next);
+        }
     }
 }

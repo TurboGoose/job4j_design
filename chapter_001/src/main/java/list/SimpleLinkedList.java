@@ -62,7 +62,7 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 
     private Node getNodeStartingFromTheTail(int index) {
         Node prevNode = tail;
-        for (int i = 0; i < size - index; i++) {
+        for (int i = 0; i < size - index - 1; i++) {
             prevNode = prevNode.prev;
         }
         return prevNode;
