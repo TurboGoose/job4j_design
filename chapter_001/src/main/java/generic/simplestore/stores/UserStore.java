@@ -7,9 +7,7 @@ public class UserStore implements Store<User> {
     private final Store<User> store = new MemStore<>();
 
     @Override
-    public void add(User model) {
-
-    }
+    public void add(User model) {}
 
     @Override
     public boolean replace(String id, User model) {

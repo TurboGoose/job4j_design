@@ -16,21 +16,17 @@ public class MemStore<T extends Base> implements Store<T> {
 
     @Override
     public boolean replace(String id, T model) {
-        try {
-            mem.set(mem.indexOf(findById(id)), model);
-        } catch (Exception exc) {
+        int index = mem.indexOf(findById(id));
+        if (index == -1) {
             return false;
         }
+        mem.set(index, model);
         return true;
     }
 
     @Override
     public boolean delete(String id) {
-        try {
-            return mem.remove(findById(id));
-        } catch (Exception exc) {
-            return false;
-        }
+        return mem.remove(findById(id));
     }
 
     @Override
