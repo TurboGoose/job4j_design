@@ -11,9 +11,10 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleArrayTest {
+    SimpleArray<String> array = new SimpleArray<>();
+
     @Test
     public void whenAddThenGet() {
-        SimpleArray<String> array = new SimpleArray<>();
         array.add("first");
         String rsl = array.get(0);
         assertThat(rsl, is("first"));
@@ -21,7 +22,6 @@ class SimpleArrayTest {
 
     @Test
     public void whenAddThenIt() {
-        SimpleArray<String> array = new SimpleArray<>();
         array.add("first");
         String rsl = array.iterator().next();
         assertThat(rsl, is("first"));
@@ -29,30 +29,43 @@ class SimpleArrayTest {
 
     @Test
     public void whenGetEmpty() {
-        SimpleArray<String> array = new SimpleArray<>();
         assertThrows(IndexOutOfBoundsException.class, () -> array.get(0));
     }
 
     @Test
     public void whenGetOutBound() {
-        SimpleArray<String> array = new SimpleArray<>();
         array.add("first");
         assertThrows(IndexOutOfBoundsException.class, () -> array.get(1));
     }
 
     @Test
     public void whenGetEmptyFromIt() {
-        SimpleArray<String> array = new SimpleArray<>();
         Iterator<String> it = array.iterator();
         assertThrows(NoSuchElementException.class, it::next);
     }
 
     @Test
     public void whenCorruptedIt() {
-        SimpleArray<String> array = new SimpleArray<>();
         array.add("first");
         Iterator<String> it = array.iterator();
         array.add("second");
         assertThrows(ConcurrentModificationException.class ,it::next);
+    }
+
+    @Test
+    public void whenContainsElement() {
+        array.add("first");
+        assertThat(array.contains("first"), is(true));
+    }
+
+    @Test
+    public void whenNotContainsElement() {
+        array.add("first");
+        assertThat(array.contains("element that not contains in array"), is(false));
+    }
+
+    @Test
+    public void whenContainsEmpty() {
+        assertThat(array.contains("element that not contains in array"), is(false));
     }
 }

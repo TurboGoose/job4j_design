@@ -27,6 +27,15 @@ public class SimpleArray<T> implements Iterable<T> {
         modCount++;
     }
 
+    public boolean contains(T model) {
+        for (int i = 0; i < size; i++) {
+            if (container[i].equals(model)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Object[] grow() {
         final double GROW_COEFFICIENT = 1.5;
         Object[] newContainer = new Object[(int)(container.length * GROW_COEFFICIENT)];
@@ -40,7 +49,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private final int expectedModCount = modCount;
             private int point = 0;
 
