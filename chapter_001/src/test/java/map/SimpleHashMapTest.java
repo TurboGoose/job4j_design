@@ -77,7 +77,7 @@ class SimpleHashMapTest {
         }
 
         @Test
-        public void insertDifferentEntriesWithOneHashCodeThenGet() {
+        public void insertDifferentEntriesWithOneHashCodeThenGetAndDelete() {
             SimpleHashMap<TestClass, String> map = new SimpleHashMap<>();
             TestClass obj1 = new TestClass(128, 128);
             TestClass obj2 = new TestClass(127, 129);
@@ -85,6 +85,8 @@ class SimpleHashMapTest {
             assertThat(map.insert(obj2, "127 + 129"), is(false));
             assertThat(map.get(obj1), is("128 + 128"));
             assertThat(map.get(obj2), equalTo(null));
+            assertThat(map.delete(obj1), is(true));
+            assertThat(map.delete(obj2), is(false));
         }
 
         @Test

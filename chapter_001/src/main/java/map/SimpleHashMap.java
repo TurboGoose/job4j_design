@@ -17,6 +17,7 @@ class Entry<K, V> {
 
 public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
     private final int INITIAL_CAPACITY = 16;
+    private final double MAX_LOAD_FACTOR = 0.75;
     private Entry<K, V>[] buckets;
     private int bucketLoad = 0;
 
@@ -44,7 +45,9 @@ public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
     public boolean delete(K key) {
         boolean success = false;
         int indexToDelete = rangedHash(key);
-        if (buckets[indexToDelete] != null) {
+        if (buckets[indexToDelete] != null &&
+                buckets[indexToDelete].key.hashCode() == key.hashCode() &&
+                buckets[indexToDelete].key.equals(key)) {
             buckets[indexToDelete] = null;
             success = true;
         }
@@ -52,14 +55,14 @@ public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
     }
 
     public boolean insert(K key, V value) {
-        if (loadFactor() >= 0.75) {
+        if (loadFactor() >= MAX_LOAD_FACTOR) {
             resize();
         }
         boolean success = false;
         int indexToInsert = rangedHash(key);
         if (buckets[indexToInsert] == null ||
                 buckets[indexToInsert].key.hashCode() == key.hashCode() &&
-                    buckets[indexToInsert].key.equals(key)) {
+                buckets[indexToInsert].key.equals(key)) {
             buckets[indexToInsert] = new Entry<>(key, value);
             bucketLoad++;
             success = true;
