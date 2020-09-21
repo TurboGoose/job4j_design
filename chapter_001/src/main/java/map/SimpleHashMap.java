@@ -1,7 +1,5 @@
 package map;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -19,7 +17,7 @@ public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
     private final int INITIAL_CAPACITY = 16;
     private final double MAX_LOAD_FACTOR = 0.75;
     private Entry<K, V>[] buckets;
-    private int bucketLoad = 0;
+    private int bucketsLoad = 0;
 
     public SimpleHashMap() {
         buckets = (Entry<K, V>[]) new Entry[INITIAL_CAPACITY];
@@ -49,6 +47,7 @@ public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
                 buckets[indexToDelete].key.hashCode() == key.hashCode() &&
                 buckets[indexToDelete].key.equals(key)) {
             buckets[indexToDelete] = null;
+            bucketsLoad--;
             success = true;
         }
         return success;
@@ -64,14 +63,14 @@ public class SimpleHashMap <K, V> implements Iterable<Entry<K, V>> {
                 buckets[indexToInsert].key.hashCode() == key.hashCode() &&
                 buckets[indexToInsert].key.equals(key)) {
             buckets[indexToInsert] = new Entry<>(key, value);
-            bucketLoad++;
+            bucketsLoad++;
             success = true;
         }
         return success;
     }
 
     private double loadFactor() {
-        return (double) bucketLoad / buckets.length;
+        return (double) bucketsLoad / buckets.length;
     }
 
     private void resize() {
