@@ -40,6 +40,13 @@ class TreeTest {
     }
 
     @Test
+    public void whenAddElementToDefunctParent() {
+        Tree<Integer> tree = new Tree<>(1);
+        assertThat(tree.add(2, 3), is(false));
+        assertThat(tree.add(3, 4), is(false));
+    }
+
+    @Test
     public void createBinaryTreeThenCallIsBinary() {
         Tree<Integer> tree = new Tree<>(1);
         tree.add(1, 2);
