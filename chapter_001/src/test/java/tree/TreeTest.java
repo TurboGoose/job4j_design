@@ -31,6 +31,15 @@ class TreeTest {
     }
 
     @Test
+    public void whenAddExistingElement() {
+        Tree<Integer> tree = new Tree<>(1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        assertThat(tree.add(1, 3), is(false));
+        assertThat(tree.add(3, 2), is(false));
+    }
+
+    @Test
     public void createBinaryTreeThenCallIsBinary() {
         Tree<Integer> tree = new Tree<>(1);
         tree.add(1, 2);
