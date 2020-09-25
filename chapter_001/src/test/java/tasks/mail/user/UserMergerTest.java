@@ -1,7 +1,5 @@
-package mail.user;
+package tasks.mail.user;
 
-import mail.user.User;
-import mail.user.UserMerger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

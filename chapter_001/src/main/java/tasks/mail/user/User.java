@@ -1,4 +1,4 @@
-package mail.user;
+package tasks.mail.user;
 
 import java.util.*;
 
