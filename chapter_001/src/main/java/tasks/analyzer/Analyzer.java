@@ -6,28 +6,27 @@ public class Analyzer {
 
     public Info diff(List<User> previous, List<User> current) {
         Info diff = new Info();
-        diff.added = differenceOf(current, previous).size();
-        diff.deleted = differenceOf(previous, current).size();
-        for (User user : intersectionOf(previous, current)) {
-            if (!Objects.equals(
-                    previous.get(previous.indexOf(user)).name,
-                    current.get(current.indexOf(user)).name)) {
-                diff.changed++;
+        Map<Integer, User> currentMap = createIdToUserMap(current);
+        for (User u : previous) {
+            if (currentMap.containsKey(u.id)) {
+                if (!Objects.equals(currentMap.get(u.id), u)) {
+                    diff.changed++;
+                }
+                currentMap.remove(u.id);
+            } else {
+                diff.deleted++;
             }
         }
+        diff.added += currentMap.size();
         return diff;
     }
 
-    <T> Set<T> intersectionOf(Collection<T> set1, Collection<T> set2) {
-        Set<T> result = new HashSet<>(set1);
-        result.retainAll(set2);
-        return result;
-    }
-
-    <T> Set<T> differenceOf(Collection<T> minuend, Collection<T> subtrahend) {
-        Set<T> result = new HashSet<>(minuend);
-        result.removeAll(subtrahend);
-        return result;
+    Map<Integer, User> createIdToUserMap(List<User> users) {
+        Map<Integer, User> idToUser = new HashMap<>();
+        for (User u : users) {
+            idToUser.putIfAbsent(u.id, u);
+        }
+        return idToUser;
     }
 
     public static class User {
@@ -44,12 +43,13 @@ public class Analyzer {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
-            return id == user.id;
+            return id == user.id &&
+                    Objects.equals(name, user.name);
         }
 
         @Override
         public int hashCode() {
-            return id;
+            return Objects.hash(id, name);
         }
     }
 
@@ -58,9 +58,7 @@ public class Analyzer {
         int changed;
         int deleted;
 
-        public Info() {
-            this(0, 0, 0);
-        }
+        public Info() {}
 
         @Override
         public String toString() {

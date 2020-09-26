@@ -38,7 +38,7 @@ class AnalyzerTest {
     }
 
     @Test
-    public void allUsersWereModified() {
+    public void allUsersWereChanged() {
         previous.add(new Analyzer.User(1, "user 1"));
         current.add(new Analyzer.User(1, "user 1 modified"));
         assertThat(analyzer.diff(previous, current), is(new Analyzer.Info(0, 1, 0)));
@@ -52,7 +52,7 @@ class AnalyzerTest {
     }
 
     @Test
-    public void someUsersWereAddedModifiedAndDeleted() {
+    public void someUsersWereAddedChangedAndDeleted() {
         previous.add(new Analyzer.User(1, "user 1"));
         previous.add(new Analyzer.User(2, "user 2"));
         previous.add(new Analyzer.User(3, "user 3"));
