@@ -1,5 +1,7 @@
 package tasks.mail.map;
 
+import tasks.mail.user.UserMerger;
+
 import java.util.*;
 
 /**
@@ -16,17 +18,20 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Map<String, Set<String>> users = new HashMap<>();
-        int numOfEntries = sc.nextInt();
+        int numOfUsers = sc.nextInt();
         sc.nextLine();
-        for (int i = 0; i < numOfEntries; i++) {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < numOfUsers; i++) {
             String[] inputLine = sc.nextLine().split(" - ");
             if (inputLine.length == 2) {
-                users.put(inputLine[0], new HashSet<>(Arrays.asList(inputLine[1].split(", "))));
+                users.add(new User(inputLine[0], Arrays.asList(inputLine[1].split(", "))));
             }
         }
 
-
+        System.out.println("--------- Result ---------");
+        for (User u : UserTools.mergeUsers(users)) {
+            System.out.println(u.name + " - " + String.join(", ", u.emails));
+        }
     }
 }
 
