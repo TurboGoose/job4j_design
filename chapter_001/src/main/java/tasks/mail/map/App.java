@@ -1,7 +1,5 @@
 package tasks.mail.map;
 
-import tasks.mail.user.UserMerger;
-
 import java.util.*;
 
 /**
