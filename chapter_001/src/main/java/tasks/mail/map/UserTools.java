@@ -14,11 +14,8 @@ public class UserTools {
             for (String email : user.emails) {
                 if (emailToUser.containsKey(email)) {
                     User originalUser = emailToUser.get(email);
-                    User newMergedUser = originalUser.mergeEmails(user);
-                    if (originalUser.emails.size() != newMergedUser.emails.size()) {
-                        for (String e : newMergedUser.emails) {
-                            emailToUser.put(e, newMergedUser);
-                        }
+                    for (String e : originalUser.mergeEmails(user)) {
+                        emailToUser.put(e, originalUser);
                     }
                 } else {
                     emailToUser.put(email, user);

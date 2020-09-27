@@ -45,9 +45,10 @@ public class User {
                 '}';
     }
 
-    public User mergeEmails(User other) {
-        Set<String> mergedSet = new HashSet<>(emails);
-        mergedSet.addAll(other.emails);
-        return new User(name, mergedSet);
+    public Set<String> mergeEmails(User other) {
+        Set<String> diff = new HashSet<>(other.emails);
+        diff.removeAll(emails);
+        emails.addAll(other.emails);
+        return diff;
     }
 }
