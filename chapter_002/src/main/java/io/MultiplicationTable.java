@@ -8,7 +8,7 @@ public class MultiplicationTable {
         if (num <= 0) {
             return;
         }
-        try (FileOutputStream out = new FileOutputStream("./chapter_002/src/main/resources/res.txt")) {
+        try (FileOutputStream out = new FileOutputStream("./files/write/MultiplicationTable.txt")) {
             StringBuilder firstRow = new StringBuilder();
             for (int col = 1; col <= num; col++) {
                 firstRow.append("\t").append(col);
