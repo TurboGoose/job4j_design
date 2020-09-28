@@ -1,8 +1,6 @@
 package io;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,9 +19,18 @@ public class LogFilter {
         return result;
     }
 
+    public static void save(List<String> log, String file) {
+        try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(file)))) {
+            log.forEach(str -> out.write(str + "\n"));
+        } catch (IOException exc) {
+            System.out.println(exc.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         final String PATH = "./files/read/log.txt";
         List<String> log = filter(PATH);
+        save(log, "./files/write/404.txt");
         log.forEach(System.out::println);
     }
 }
