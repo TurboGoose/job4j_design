@@ -8,14 +8,14 @@ import static org.hamcrest.Matchers.*;
 class ConfigTest {
     @Test
     public void emptyPropertyFile() {
-        Config conf = new Config("../files/read/testProperties/empty.txt");
+        Config conf = new Config("../files/testss/ConfigTest/empty.txt");
         conf.load();
         assertThat(conf.value(""), is(nullValue()));
     }
 
     @Test
     public void propertyFileWithoutCommentsAndEmptyLines() {
-        Config conf = new Config("../files/read/testProperties/withoutCommentsAndEmptyLines.txt");
+        Config conf = new Config("../files/tests/ConfigTest/withoutCommentsAndEmptyLines.txt");
         conf.load();
         assertThat(conf.value("property1"), is("1"));
         assertThat(conf.value("property2"), is("2"));
@@ -24,7 +24,7 @@ class ConfigTest {
 
     @Test
     public void propertyFileWithEmptyLines() {
-        Config conf = new Config("../files/read/testProperties/withEmptyLines.txt");
+        Config conf = new Config("../files/tests/ConfigTest/withEmptyLines.txt");
         conf.load();
         assertThat(conf.value("property1"), is("1"));
         assertThat(conf.value("property2"), is("2"));
@@ -34,7 +34,7 @@ class ConfigTest {
 
     @Test
     public void propertyFileWithComments() {
-        Config conf = new Config("../files/read/testProperties/withComments.txt");
+        Config conf = new Config("../files/tests/ConfigTest/withComments.txt");
         conf.load();
         assertThat(conf.value("property1"), is("1"));
         assertThat(conf.value("property2"), is("2"));
@@ -44,7 +44,7 @@ class ConfigTest {
 
     @Test
     public void propertyFileWithCommentsAndEmptyLines() {
-        Config conf = new Config("../files/read/testProperties/withCommentsAndEmptyLines.txt");
+        Config conf = new Config("../files/tests/ConfigTest/withCommentsAndEmptyLines.txt");
         conf.load();
         assertThat(conf.value("property1"), is("1"));
         assertThat(conf.value("property2"), is("2"));
