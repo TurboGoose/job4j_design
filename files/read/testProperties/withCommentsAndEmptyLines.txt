@@ -1,0 +1,10 @@
+
+//comment
+property1=1
+
+//comment
+property2=2
+property3=3
+
+//comment
+
