@@ -2,9 +2,50 @@ package io;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Analizy {
+    private String startTime = null;
+
+    public void unavailable(String source, String target) {
+        try (BufferedReader in = new BufferedReader(new FileReader(source));
+             PrintWriter out = new PrintWriter(new FileOutputStream(target))) {
+
+            List<TimePeriod> unavailableTimePeriods = new ArrayList<>();
+            in.lines().forEach(line -> {
+                    String time = parseTime(line);
+                    if (hasErrorCodes(line)) {
+                        if (startTime == null) {
+                            startTime = time;
+                        }
+                    } else if (startTime != null) {
+                        unavailableTimePeriods.add(new TimePeriod(startTime, time));
+                        startTime = null;
+                    }
+            });
+            unavailableTimePeriods.forEach(out::println);
+
+        } catch (IOException exc) {
+            System.out.println(exc.getMessage());
+        }
+    }
+
+    private String parseTime(String line) {
+        String[] codeTime = line.split(" ");
+        if (codeTime.length != 2) {
+            return "";
+        }
+        return codeTime[1];
+    }
+
+    private boolean hasErrorCodes(String line) {
+        String[] codeTime = line.split(" ");
+        if (codeTime.length != 2) {
+            return false;
+        }
+        String code = codeTime[0], time = codeTime[1];
+        return Objects.equals(code, "400") || Objects.equals(code, "500");
+    }
+
     public static class TimePeriod {
         public String start;
         public String stop;
@@ -18,35 +59,5 @@ public class Analizy {
         public String toString() {
             return start + " - " + stop;
         }
-    }
-
-    public void unavailable(String source, String target) {
-        try (BufferedReader in = new BufferedReader(new FileReader(source));
-                PrintWriter out = new PrintWriter(new FileOutputStream(target))) {
-            List<String> logs = in.lines().collect(Collectors.toList());
-            defineUnavailableTimePeriods(logs).forEach(out::println);
-        } catch (IOException exc) {
-            System.out.println(exc.getMessage());
-        }
-    }
-
-    List<TimePeriod> defineUnavailableTimePeriods(List<String> logs) {
-        List<TimePeriod> result = new ArrayList<>();
-        String start = null;
-        for (String log : logs) {
-            String[] codeTime = log.split(" ");
-            String code = codeTime[0], time = codeTime[1];
-            if (Objects.equals(code, "400") || Objects.equals(code, "500")) {
-                if (start == null) {
-                    start = time;
-                }
-            } else {
-                if (start != null) {
-                    result.add(new TimePeriod(start, time));
-                }
-                start = null;
-            }
-        }
-        return result;
     }
 }
