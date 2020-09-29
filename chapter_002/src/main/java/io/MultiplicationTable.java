@@ -25,8 +25,4 @@ public class MultiplicationTable {
             System.out.println(exc.getMessage());
         }
     }
-
-    public static void main(String[] args) {
-        printTable(4);
-    }
 }

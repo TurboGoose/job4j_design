@@ -5,9 +5,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class EvenNumberFile {
-    public static void main(String[] args) {
-        final String PATH = "./files/read/even.txt";
-        try (FileInputStream in = new FileInputStream(PATH)) {
+    public void checkEvenAndOddNumbers(String source) {
+        try (FileInputStream in = new FileInputStream(source)) {
             StringBuilder text = new StringBuilder();
             int read;
             while ((read = in.read()) != -1) {

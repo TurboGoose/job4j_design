@@ -26,11 +26,4 @@ public class LogFilter {
             System.out.println(exc.getMessage());
         }
     }
-
-    public static void main(String[] args) {
-        final String PATH = "./files/read/log.txt";
-        List<String> log = filter(PATH);
-        save(log, "./files/write/404.txt");
-        log.forEach(System.out::println);
-    }
 }
