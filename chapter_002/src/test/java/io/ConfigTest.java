@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 class ConfigTest {
+    private final String SEP = System.lineSeparator();
     @TempDir
     File tempDir;
 
@@ -25,7 +26,7 @@ class ConfigTest {
     @Test
     public void propertyFileWithoutCommentsAndEmptyLines() throws IOException {
         String inputData =
-                "property1=1\n" +
+                "property1=1" + SEP +
                 "property2=2";
         File source = new File(tempDir, "test.txt");
         try (FileWriter sourceFile = new FileWriter(source)) {
@@ -40,8 +41,8 @@ class ConfigTest {
     @Test
     public void propertyFileWithEmptyLines() throws IOException {
         String inputData =
-                "property1=1\n\n\n" +
-                "property2=2\n";
+                "property1=1" + SEP + SEP +
+                "property2=2" + SEP;
         File source = new File(tempDir, "test.txt");
         try (FileWriter sourceFile = new FileWriter(source)) {
             sourceFile.write(inputData);
@@ -56,8 +57,8 @@ class ConfigTest {
     @Test
     public void propertyFileWithComments() throws IOException {
         String inputData =
-                "property1=1\n" +
-                "//comment\n" +
+                "property1=1" + SEP +
+                "//comment" + SEP +
                 "property2=2";
         File source = new File(tempDir, "test.txt");
         try (FileWriter sourceFile = new FileWriter(source)) {
@@ -72,11 +73,12 @@ class ConfigTest {
 
     @Test
     public void propertyFileWithCommentsAndEmptyLines() throws IOException {
+
         String inputData =
-                "property1=1\n\n\n" +
-                "//comment\n\n" +
-                "property2=2\n" +
-                "//comment\n\n";
+                "property1=1" + SEP + SEP +
+                "//comment" + SEP + SEP +
+                "property2=2" + SEP + SEP +
+                "//comment" + SEP + SEP;
         File source = new File(tempDir, "test.txt");
         try (FileWriter sourceFile = new FileWriter(source)) {
             sourceFile.write(inputData);
