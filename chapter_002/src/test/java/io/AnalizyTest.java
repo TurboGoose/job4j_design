@@ -17,11 +17,11 @@ class AnalizyTest {
         File source = new File(tempDir, "source.txt");
         File target = new File(tempDir, "target.txt");
         String inputData =
-                "200 10:56:01\n" +
-                "500 10:57:01\n" +
-                "400 10:58:01\n" +
-                "200 10:59:01\n" +
-                "500 11:01:02\n" +
+                "200 10:56:01" + System.lineSeparator() +
+                "500 10:57:01" + System.lineSeparator() +
+                "400 10:58:01" + System.lineSeparator() +
+                "200 10:59:01" + System.lineSeparator() +
+                "500 11:01:02" + System.lineSeparator() +
                 "200 11:02:02";
         String expected =
                 "10:57:01 - 10:59:01" +
