@@ -39,8 +39,8 @@ public class FileUtils {
     }
 
     private static class FileNameAndSize {
-        String name;
-        long size;
+        final String name;
+        final long size;
 
         public FileNameAndSize(String name, long size) {
             this.name = name;
@@ -62,14 +62,3 @@ public class FileUtils {
         }
     }
 }
-
-//class Run {
-//    public static void main(String[] args) throws IOException {
-//        Path root = Paths.get("P:/test");
-//        FileUtils utils = new FileUtils(root);
-//        utils.searchDuplicates().forEach(set -> {
-//            System.out.println();
-//            set.forEach(System.out::println);
-//        });
-//    }
-//}
