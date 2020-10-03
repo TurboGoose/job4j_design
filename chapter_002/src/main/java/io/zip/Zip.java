@@ -8,51 +8,46 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip extends SimpleFileVisitor<Path> {
-    private final List<Path> sources;
-    private final Path target;
+    private Path source;
+    private Path target;
     private final String toExclude;
-    private Path curTarget;
-    private Path curSource;
 
-    public Zip(List<Path> sources, Path target, String toExclude) {
-        this.sources = sources;
+    public Zip(Path source, Path target, String toExclude) {
+        this.source = source;
         this.target = target;
         this.toExclude = toExclude;
     }
 
-    public Zip(List<Path> sources, Path target) {
-        this(sources, target, null);
-    }
-
     public Zip(Path source, Path target) {
-        this(List.of(source), target);
+        this(source, target, null);
     }
 
     public void packFiles() throws IOException {
-        for (Path src : sources) {
-            Files.walkFileTree(src, this);
-        }
+        Files.walkFileTree(source, this);
     }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        System.out.println(target);
-        System.out.println(dir);
-        Files.createDirectory(Paths.get(target.toString(), curSource.relativize(dir).toString()));
+        Path targetSubFolder = Paths.get(target.toString(), source.relativize(dir).toString()).normalize();
 
+        System.out.println("Copying folder : " + targetSubFolder);
+
+        if (!Files.exists(targetSubFolder)) {
+            target = Files.createDirectory(targetSubFolder);
+        }
         return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         if (toExclude == null || !file.endsWith(toExclude)) {
-            packSingleFile(file);
+            packSingleFile(file, Files.createFile(Paths.get(target.toString(), file.getFileName().toString())));
         }
         return FileVisitResult.CONTINUE;
     }
 
-    public void packSingleFile(Path source) throws IOException {
-        System.out.println(source + System.lineSeparator() + target);
+    public void packSingleFile(Path source, Path target) throws IOException {
+        System.out.println("Copying file : " + source + "\n          To : " + target);
         try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target.toFile())))) {
             zip.putNextEntry(new ZipEntry(source.toString()));
             try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(source.toFile()))) {

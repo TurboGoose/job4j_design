@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import javax.swing.plaf.IconUIResource;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -32,7 +31,6 @@ class ZipTest {
         Files.walkFileTree(dir, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                //System.out.println("delete file: " + file.toString());
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
@@ -40,7 +38,6 @@ class ZipTest {
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
-                //System.out.println("delete dir: " + dir.toString());
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -58,15 +55,15 @@ class ZipTest {
     @Test
     public void zipDirectory() throws IOException {
         Path sourceRoot = Files.createDirectory(Paths.get(srcTemp.toString(), "sourceRoot"));
-        Path fileInRoot = Files.writeString(Paths.get(srcTemp.toString(), "fileInRoot.txt"), "location : srcTemp/sourceRoot/fileInRoot.txt");
+        Path fileInRoot = Files.writeString(Paths.get(sourceRoot.toString(), "fileInRoot.txt"), "location : srcTemp/sourceRoot/fileInRoot.txt");
         Path innerFolder = Files.createDirectory(Paths.get(sourceRoot.toString(), "innerFolder"));
         Path fileInInnerFolder = Files.writeString(Paths.get(innerFolder.toString(), "fileInInnerFolder.txt"), "location : serTemp/sourceRoot/innerFolder/fileInInnerFolder.txt");
 
         Path targetRoot = Files.createDirectory(Paths.get(resTemp.toString(), "targetRoot"));
         new Zip(sourceRoot, targetRoot).packFiles();
-        Path fileInTargetRoot = Paths.get(resTemp.toString(), "fileInRoot.txt");
-        Path innerTargetFolder = Files.createDirectory(Paths.get(targetRoot.toString(), "innerFolder"));
-        Path fileInInnerTargetFolder = Paths.get(resTemp.toString(), "fileInInnerFolder.txt");
+        Path fileInTargetRoot = Paths.get(targetRoot.toString(), "fileInRoot.txt");
+        Path innerTargetFolder = Paths.get(targetRoot.toString(), "innerFolder");
+        Path fileInInnerTargetFolder = Paths.get(innerTargetFolder.toString(), "fileInInnerFolder.txt");
 
         assertThat(Files.exists(fileInTargetRoot), is(true));
         assertThat(Files.exists(innerTargetFolder), is(true));
