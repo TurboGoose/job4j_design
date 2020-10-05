@@ -7,50 +7,38 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
-    public void packFile(Path sourceFile, Path targetDir) throws IOException {
-        targetDir = Files.createFile(Paths.get(targetDir.toString(), sourceFile.getFileName().toString()));
-        try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(targetDir.toFile())))) {
-            zip.putNextEntry(new ZipEntry(sourceFile.toString()));
-            try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(sourceFile.toFile()))) {
-                zip.write(out.readAllBytes());
-            }
+    public void packFile(Path sourceFile, Path targetFile) throws IOException {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(targetFile.toFile()))) {
+            zos.putNextEntry(new ZipEntry(sourceFile.toString()));
+            Files.copy(sourceFile, zos);
+            zos.closeEntry();
         }
     }
 
-    public void packDirectory(Path sourceDir, Path targetDir) throws IOException {
-        packDirectory(sourceDir, targetDir, null);
+    public void packDirectory(Path sourceDir, Path targetFile) throws IOException {
+        packDirectory(sourceDir, targetFile, null);
     }
 
-    public void packDirectory(Path sourceDir, Path targetDir, String toExclude) throws IOException {
-        Files.walkFileTree(sourceDir, new DirectoryZipper(sourceDir, targetDir, toExclude));
-    }
+    public void packDirectory(Path sourceDir, Path targetFile, String toExclude) throws IOException {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(targetFile.toFile()))) {
+            Files.walkFileTree(sourceDir, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (toExclude == null || !file.getFileName().toString().endsWith(toExclude)) {
+                        zos.putNextEntry(new ZipEntry(sourceDir.relativize(file).toString()));
+                        Files.copy(file, zos);
+                        zos.closeEntry();
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
 
-    class DirectoryZipper  extends SimpleFileVisitor<Path> {
-        private final Path sourceDir;
-        private Path targetDir;
-        private final String toExclude;
-
-        public DirectoryZipper(Path sourceDir, Path targetDir, String toExclude) {
-            this.sourceDir = sourceDir;
-            this.targetDir = targetDir;
-            this.toExclude = toExclude;
-        }
-
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            Path targetSubFolder = Paths.get(targetDir.toString(), sourceDir.relativize(dir).toString()).normalize();
-            if (!Files.exists(targetSubFolder)) {
-                targetDir = Files.createDirectory(targetSubFolder);
-            }
-            return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            if (toExclude == null || !file.toString().endsWith(toExclude)) {
-                packFile(file, targetDir);
-            }
-            return FileVisitResult.CONTINUE;
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    zos.putNextEntry(new ZipEntry(sourceDir.relativize(dir).toString() + File.separator));
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         }
     }
 }
