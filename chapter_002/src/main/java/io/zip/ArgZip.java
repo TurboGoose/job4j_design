@@ -13,18 +13,23 @@ public class ArgZip {
     }
 
     boolean parse() {
-        final List<String> PARAMS = List.of("-d", "-e", "-o");
-
-        if (args.length != 6) {
+        if (args.length % 2 != 0) {
             return false;
         }
+
+        final Set<String> ALL_PARAMS = Set.of("-d", "-e", "-o");
+        final Set<String> REQUIRED_PARAMS = Set.of("-d", "-o");
+
+        Set<String> passedParams = new HashSet<>();
         for (int i = 0; i < args.length; i += 2) {
-            if (!PARAMS.contains(args[i]) || PARAMS.contains(args[i + 1])) {
+            if (!ALL_PARAMS.contains(args[i]) || ALL_PARAMS.contains(args[i + 1])) {
                 return false;
             }
+            passedParams.add(args[i]);
             passedArgs.put(args[i], args[i + 1]);
         }
-        return true;
+
+        return passedParams.containsAll(REQUIRED_PARAMS);
     }
 
     public boolean valid() {
@@ -32,14 +37,23 @@ public class ArgZip {
     }
 
     public String directory() {
+        if (!valid) {
+            throw new UnsupportedOperationException();
+        }
         return passedArgs.get("-d");
     }
 
     public String exclude() {
+        if (!valid) {
+            throw new UnsupportedOperationException();
+        }
         return passedArgs.get("-e");
     }
 
     public String output() {
+        if (!valid) {
+            throw new UnsupportedOperationException();
+        }
         return passedArgs.get("-o");
     }
 }

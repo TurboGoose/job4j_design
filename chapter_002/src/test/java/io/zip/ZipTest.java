@@ -10,6 +10,9 @@ import java.nio.file.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+//These tests check only result file existence and its non-emptiness
+//For more accurate testing results unzip methods need to be implemented
+
 class ZipTest {
     Path srcTemp;
     Path resTemp;
