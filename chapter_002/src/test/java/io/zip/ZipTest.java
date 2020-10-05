@@ -16,18 +16,23 @@ class ZipTest {
     Path resTemp;
 
     @BeforeEach
-    public void setupFiles(@TempDir Path tempDir) throws IOException {
-        //srcTemp = Files.createTempDirectory(tempDir, "src");
-        //resTemp = Files.createTempDirectory(tempDir, "res");
-
-        Path testDir = Paths.get("p:/test");
-        deleteDir(testDir);
-        Files.createDirectory(testDir);
-        srcTemp = Files.createDirectory(Paths.get("p:/test/src"));
-        resTemp = Files.createDirectory(Paths.get("p:/test/res"));
+    public void setupTestFixture(@TempDir Path tempDir) throws IOException {
+        srcTemp = Files.createTempDirectory(tempDir, "src");
+        resTemp = Files.createTempDirectory(tempDir, "res");
+        //setupLocalTestFixture("p:/test");
     }
 
-    void deleteDir(Path dir) throws IOException {
+    public void setupLocalTestFixture(String path) throws IOException {
+        Path testFolder = Paths.get(path);
+        if (Files.exists(testFolder)) {
+            deleteDir(testFolder);
+        }
+        Files.createDirectory(testFolder);
+        srcTemp = Files.createDirectory(Paths.get(testFolder.toString(), "src"));
+        resTemp = Files.createDirectory(Paths.get(testFolder.toString(), "res"));
+    }
+
+    public void deleteDir(Path dir) throws IOException {
         Files.walkFileTree(dir, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -45,30 +50,55 @@ class ZipTest {
 
     @Test
     public void zipSingleFile() throws IOException {
-        Path source = Files.writeString(Paths.get(srcTemp.toString(), "source.txt"), "Hello world!!!");
-        Path target = Files.createFile(Paths.get(resTemp.toString(), "result.txt"));
-        new Zip(source, target).packFiles();
+        Path sourceFile = Files.writeString(Paths.get(srcTemp.toString(), "source.txt"), "Hello world!!!");
+        Path targetFile = Paths.get(resTemp.toString(), "source.txt");
 
-        assertThat(target.toFile().length(), is(not(0)));
+        new Zip().packFile(sourceFile, resTemp);
+
+        assertThat(Files.exists(targetFile), is(true));
+        assertThat(targetFile.toFile().length(), is(not(0)));
     }
 
     @Test
-    public void zipDirectory() throws IOException {
+    public void zipDirectoryWithoutExcluding() throws IOException {
         Path sourceRoot = Files.createDirectory(Paths.get(srcTemp.toString(), "sourceRoot"));
-        Path fileInRoot = Files.writeString(Paths.get(sourceRoot.toString(), "fileInRoot.txt"), "location : srcTemp/sourceRoot/fileInRoot.txt");
+        Path fileInSourceRoot = Files.writeString(Paths.get(sourceRoot.toString(), "fileInRoot.txt"), "my location : src/sourceRoot/fileInRoot.txt");
         Path innerFolder = Files.createDirectory(Paths.get(sourceRoot.toString(), "innerFolder"));
-        Path fileInInnerFolder = Files.writeString(Paths.get(innerFolder.toString(), "fileInInnerFolder.txt"), "location : serTemp/sourceRoot/innerFolder/fileInInnerFolder.txt");
+        Path fileInInnerSourceFolder = Files.writeString(Paths.get(innerFolder.toString(), "fileInInnerFolder.txt"), "my location : src/sourceRoot/innerFolder/fileInInnerFolder.txt");
 
         Path targetRoot = Files.createDirectory(Paths.get(resTemp.toString(), "targetRoot"));
-        new Zip(sourceRoot, targetRoot).packFiles();
         Path fileInTargetRoot = Paths.get(targetRoot.toString(), "fileInRoot.txt");
         Path innerTargetFolder = Paths.get(targetRoot.toString(), "innerFolder");
         Path fileInInnerTargetFolder = Paths.get(innerTargetFolder.toString(), "fileInInnerFolder.txt");
 
+        new Zip().packDirectory(sourceRoot, targetRoot);
+
+        assertThat(Files.exists(targetRoot), is(true));
         assertThat(Files.exists(fileInTargetRoot), is(true));
         assertThat(Files.exists(innerTargetFolder), is(true));
         assertThat(Files.exists(fileInInnerTargetFolder), is(true));
         assertThat(fileInTargetRoot.toFile().length(), is(not(0)));
+        assertThat(fileInInnerTargetFolder.toFile().length(), is(not(0)));
+    }
+
+    @Test
+    public void zipDirectoryWithExcluding() throws IOException {
+        Path sourceRoot = Files.createDirectory(Paths.get(srcTemp.toString(), "sourceRoot"));
+        Path fileInSourceRootToExclude = Files.writeString(Paths.get(sourceRoot.toString(), "fileInRoot.excl"), "my location : src/sourceRoot/fileInRootToExclude.excl");
+        Path innerFolder = Files.createDirectory(Paths.get(sourceRoot.toString(), "innerFolder"));
+        Path fileInInnerFolder = Files.writeString(Paths.get(innerFolder.toString(), "fileInInnerFolder.txt"), "my location : src/sourceRoot/innerFolder/fileInInnerFolder.txt");
+
+        Path targetRoot = Files.createDirectory(Paths.get(resTemp.toString(), "targetRoot"));
+        Path fileInTargetRootExcluded = Paths.get(targetRoot.toString(), "fileInRoot.excl");
+        Path innerTargetFolder = Paths.get(targetRoot.toString(), "innerFolder");
+        Path fileInInnerTargetFolder = Paths.get(innerTargetFolder.toString(), "fileInInnerFolder.txt");
+
+        new Zip().packDirectory(sourceRoot, targetRoot, "excl");
+
+        assertThat(Files.exists(targetRoot), is(true));
+        assertThat(Files.exists(fileInTargetRootExcluded), is(false));
+        assertThat(Files.exists(innerTargetFolder), is(true));
+        assertThat(Files.exists(fileInInnerTargetFolder), is(true));
         assertThat(fileInInnerTargetFolder.toFile().length(), is(not(0)));
     }
 }
