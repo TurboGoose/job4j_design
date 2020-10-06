@@ -2,17 +2,20 @@ package io.chat;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Chat {
     private enum State {ACTIVE, INACTIVE, ENDED}
+    private State chatState = State.ACTIVE;
 
     private final int BUFFER_SIZE = 10;
     private final Queue<String> replyBuffer = new ArrayDeque<>(BUFFER_SIZE);
     private final List<String> logBuffer = new ArrayList<>(BUFFER_SIZE);
 
     private final String sourceFile;
+    private int numberOfSourceFileLines;
     private final String logFile;
-    private State chatState = State.ACTIVE;
 
     public Chat(String sourceFile, String logFile) {
         this.sourceFile = sourceFile;
@@ -20,11 +23,11 @@ public class Chat {
     }
 
     public void run() {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
+            readNumberOfSourceFileLines();
             while (!isEnded()) {
                 String message = in.readLine();
-
+                writeToLog(message);
                 if (isStopWord(message)) {
                     stopChat();
                 }
@@ -39,15 +42,71 @@ public class Chat {
                     System.out.println(reply);
                     writeToLog(reply);
                 }
-                writeToLog(message);
             }
         }
         catch (IOException exc) {
             System.out.println(">>> IO exception:\n\t" + exc.getMessage());
+            exc.printStackTrace();
         }
         catch (Exception exc) {
             System.out.println(">>> Unexpected exception:\n\t" + exc.getMessage());
+            exc.printStackTrace();
         }
+    }
+
+    private void readNumberOfSourceFileLines() throws IOException {
+        try (BufferedReader source = new BufferedReader(new FileReader(sourceFile))) {
+            numberOfSourceFileLines = (int) source.lines().count();
+        }
+    }
+
+    private void writeToLog(String line) throws IOException {
+        if (logBuffer.size() >= BUFFER_SIZE) {
+            updateLogBuffer();
+        }
+        logBuffer.add(line);
+    }
+
+    private void updateLogBuffer() throws IOException {
+        try (PrintWriter out = new PrintWriter(new FileWriter(logFile, true))) {
+            for (String log : logBuffer) {
+                out.println(log);
+            }
+        }
+        logBuffer.clear();
+    }
+
+    private String reply() throws IOException {
+        if (replyBuffer.isEmpty()) {
+            updateReplyBuffer();
+        }
+        return replyBuffer.poll();
+    }
+
+    private void updateReplyBuffer() throws IOException {
+        try (BufferedReader in = new BufferedReader(new FileReader(sourceFile))) {
+            List<Integer> chosenNumbers = generateNRandomUniqueNumbersInRange(0, numberOfSourceFileLines, BUFFER_SIZE);
+            List<String> chosenLines = new ArrayList<>();
+            String line;
+            for (int i = 0; i < Collections.max(chosenNumbers); i++) {
+                if ((line = in.readLine()) == null) {
+                    break;
+                }
+                if (chosenNumbers.contains(i)) {
+                    chosenLines.add(line);
+                }
+            }
+            Collections.shuffle(chosenLines);
+            replyBuffer.addAll(chosenLines);
+        }
+    }
+
+    private List<Integer> generateNRandomUniqueNumbersInRange(int from, int to, int n) {
+        List<Integer> result = from > to ?
+                new ArrayList<>() :
+                IntStream.rangeClosed(from, to - 1).boxed().collect(Collectors.toList());
+        Collections.shuffle(result);
+        return result.subList(0, Math.min(n, result.size()));
     }
 
     private boolean isStopWord(String word) {
@@ -78,48 +137,8 @@ public class Chat {
         chatState = State.ACTIVE;
     }
 
-    private void endChat() {
+    private void endChat() throws IOException {
         chatState = State.ENDED;
-    }
-
-    String reply() throws IOException {
-        if (replyBuffer.isEmpty()) {
-            updateReplyBuffer();
-        }
-        return replyBuffer.poll();
-    }
-
-    private void updateReplyBuffer() throws IOException {
-        try (BufferedReader in = new BufferedReader(new FileReader(sourceFile))) {
-            int totalNumberOfLines = (int) in.lines().count();
-            int[] chosenNumbersOfLines = new Random().ints(BUFFER_SIZE, 0, totalNumberOfLines)
-                    .distinct().sorted().toArray();
-            int curNum = 0;
-            String curLine = "No phrase";
-            for (int num : chosenNumbersOfLines) {
-                while (curNum++ != num) {
-                    if ((curLine = in.readLine()) == null) {
-                        return;
-                    }
-                }
-                replyBuffer.offer(curLine);
-            }
-        }
-    }
-
-    void writeToLog(String line) throws IOException {
-        if (logBuffer.size() >= BUFFER_SIZE) {
-            updateLogBuffer();
-        }
-        logBuffer.add(line);
-    }
-
-    private void updateLogBuffer() throws IOException {
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(logFile))) {
-            for (String log : logBuffer) {
-                out.append(log);
-            }
-        }
-        logBuffer.clear();
+        updateLogBuffer();
     }
 }
