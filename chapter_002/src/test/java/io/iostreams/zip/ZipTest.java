@@ -1,4 +1,4 @@
-package io.zip;
+package io.iostreams.zip;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

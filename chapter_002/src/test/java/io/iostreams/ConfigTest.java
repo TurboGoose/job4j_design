@@ -1,5 +1,6 @@
-package io;
+package io.iostreams;
 
+import io.iostreams.Config;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

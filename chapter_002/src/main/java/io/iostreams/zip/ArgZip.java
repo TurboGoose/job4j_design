@@ -1,4 +1,4 @@
-package io.zip;
+package io.iostreams.zip;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package io.chat;
+package io.iostreams.chat;
 
 import java.io.*;
 import java.util.*;

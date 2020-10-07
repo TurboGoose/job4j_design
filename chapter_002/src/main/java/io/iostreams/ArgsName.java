@@ -1,4 +1,4 @@
-package io;
+package io.iostreams;
 
 import java.util.HashMap;
 import java.util.Map;

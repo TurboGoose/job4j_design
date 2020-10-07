@@ -1,5 +1,6 @@
-package io;
+package io.iostreams;
 
+import io.iostreams.ArgsName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

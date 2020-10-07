@@ -1,4 +1,4 @@
-package io;
+package io.iostreams;
 
 import java.io.IOException;
 import java.nio.file.*;
