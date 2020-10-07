@@ -2,6 +2,7 @@ package io.socket;
 
 import java.io.*;
 import java.net.*;
+import java.util.Objects;
 
 public class EchoServer {
     public static void main(String[] args) throws IOException {
@@ -11,18 +12,35 @@ public class EchoServer {
                 Socket clientSocket = serverSocket.accept();
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                      PrintWriter out = new PrintWriter(clientSocket.getOutputStream())) {
-                    String str = in.readLine();
-                    if (str.contains("?msg=Bye")) {
+                    String param = parseParameterFromMessage(in.readLine());
+                    System.out.println("Client -> " + param);
+                    String response = param;
+                    if (Objects.equals(param, "Exit")) {
                         break;
                     }
-                    do {
-                        System.out.println(str);
-                    } while (!(str = in.readLine()).isEmpty());
-                    System.out.println();
-                    out.println("HTTP/1.1 200 OK");
+                    else if (Objects.equals(param, "Hello")) {
+                        response = "Hello, dear friend";
+                    }
+                    out.println(generateHttpRequest(response));
                 }
             }
-            System.out.println("Server is locked down");
+            System.out.println("\nServer is locked down");
         }
+    }
+
+    //Only for this pattern: "GET /?param=arg HTTP/1.1"
+    static String parseParameterFromMessage(String message) {
+        String[] requestParts = message.split(" ");
+        if (requestParts.length >= 2) {
+            String[] paramAndArg = requestParts[1].split("=");
+            if (paramAndArg.length == 2) {
+                return paramAndArg[1];
+            }
+        }
+        return "";
+    }
+
+    static String generateHttpRequest(String str) {
+        return "HTTP/1.1 200 OK" + System.lineSeparator().repeat(2) + str;
     }
 }
