@@ -2,20 +2,16 @@ package io.chat;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Chat {
     private enum State {ACTIVE, INACTIVE, ENDED}
     private State chatState = State.ACTIVE;
 
-    private final int BUFFER_SIZE = 10;
-    private final Queue<String> replyBuffer = new ArrayDeque<>(BUFFER_SIZE);
-    private final List<String> logBuffer = new ArrayList<>(BUFFER_SIZE);
-
     private final String sourceFile;
-    private int numberOfSourceFileLines;
     private final String logFile;
+    private final List<String> phrases = new ArrayList<>();
+    private final List<String> log = new ArrayList<>();
+    private BufferedReader input;
 
     public Chat(String sourceFile, String logFile) {
         this.sourceFile = sourceFile;
@@ -23,10 +19,10 @@ public class Chat {
     }
 
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
-            readNumberOfSourceFileLines();
+        try {
+            setup();
             while (!isEnded()) {
-                String message = in.readLine();
+                String message = readFromInput();
                 writeToLog(message);
                 if (isStopWord(message)) {
                     stopChat();
@@ -39,10 +35,11 @@ public class Chat {
                 }
                 else if (isActive()) {
                     String reply = reply();
-                    System.out.println(reply);
+                    writeToOutput(reply);
                     writeToLog(reply);
                 }
             }
+            tearDown();
         }
         catch (IOException exc) {
             System.out.println(">>> IO exception:\n\t" + exc.getMessage());
@@ -54,59 +51,46 @@ public class Chat {
         }
     }
 
-    private void readNumberOfSourceFileLines() throws IOException {
-        try (BufferedReader source = new BufferedReader(new FileReader(sourceFile))) {
-            numberOfSourceFileLines = (int) source.lines().count();
-        }
+    private void setup() throws IOException {
+        readPhrasesFromSourceFile();
+        openInputStream(System.in);
     }
 
-    private void writeToLog(String line) throws IOException {
-        if (logBuffer.size() >= BUFFER_SIZE) {
-            updateLogBuffer();
-        }
-        logBuffer.add(line);
-    }
-
-    private void updateLogBuffer() throws IOException {
-        try (PrintWriter out = new PrintWriter(new FileWriter(logFile, true))) {
-            for (String log : logBuffer) {
-                out.println(log);
-            }
-        }
-        logBuffer.clear();
-    }
-
-    private String reply() throws IOException {
-        if (replyBuffer.isEmpty()) {
-            updateReplyBuffer();
-        }
-        return replyBuffer.poll();
-    }
-
-    private void updateReplyBuffer() throws IOException {
+    private void readPhrasesFromSourceFile() throws IOException {
         try (BufferedReader in = new BufferedReader(new FileReader(sourceFile))) {
-            List<Integer> chosenNumbers = generateNRandomUniqueNumbersInRange(0, numberOfSourceFileLines, BUFFER_SIZE);
-            List<String> chosenLines = new ArrayList<>();
-            String line;
-            for (int i = 0; i < Collections.max(chosenNumbers); i++) {
-                if ((line = in.readLine()) == null) {
-                    break;
-                }
-                if (chosenNumbers.contains(i)) {
-                    chosenLines.add(line);
-                }
-            }
-            Collections.shuffle(chosenLines);
-            replyBuffer.addAll(chosenLines);
+            in.lines().forEach(phrases::add);
         }
     }
 
-    private List<Integer> generateNRandomUniqueNumbersInRange(int from, int to, int n) {
-        List<Integer> result = from > to ?
-                new ArrayList<>() :
-                IntStream.rangeClosed(from, to - 1).boxed().collect(Collectors.toList());
-        Collections.shuffle(result);
-        return result.subList(0, Math.min(n, result.size()));
+    private void openInputStream(InputStream input) {
+        this.input = new BufferedReader(new InputStreamReader(input));
+    }
+
+    private String readFromInput() throws IOException {
+        return input.readLine();
+    }
+
+    private void writeToLog(String line) {
+        log.add(line);
+    }
+
+    private String reply() {
+        return phrases.get(new Random().nextInt(phrases.size()));
+    }
+
+    private void writeToOutput(String line) {
+        System.out.println(line);
+    }
+
+    private void tearDown() throws IOException {
+        input.close();
+        writeLogToFile();
+    }
+
+    private void writeLogToFile() throws IOException {
+        try (PrintWriter out = new PrintWriter(new FileWriter(logFile, true))) {
+            log.forEach(out::println);
+        }
     }
 
     private boolean isStopWord(String word) {
@@ -137,8 +121,7 @@ public class Chat {
         chatState = State.ACTIVE;
     }
 
-    private void endChat() throws IOException {
+    private void endChat() {
         chatState = State.ENDED;
-        updateLogBuffer();
     }
 }
