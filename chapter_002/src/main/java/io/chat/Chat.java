@@ -11,7 +11,6 @@ public class Chat {
     private final String logFile;
     private final List<String> phrases = new ArrayList<>();
     private final List<String> log = new ArrayList<>();
-    private BufferedReader input;
 
     public Chat(String sourceFile, String logFile) {
         this.sourceFile = sourceFile;
@@ -19,10 +18,10 @@ public class Chat {
     }
 
     public void run() {
-        try {
-            setup();
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
+            readPhrasesFromSourceFile();
             while (!isEnded()) {
-                String message = readFromInput();
+                String message = in.readLine();
                 writeToLog(message);
                 if (isStopWord(message)) {
                     stopChat();
@@ -35,11 +34,11 @@ public class Chat {
                 }
                 else if (isActive()) {
                     String reply = reply();
-                    writeToOutput(reply);
+                    System.out.println(reply);
                     writeToLog(reply);
                 }
             }
-            tearDown();
+            writeLogToFile();
         }
         catch (IOException exc) {
             System.out.println(">>> IO exception:\n\t" + exc.getMessage());
@@ -51,23 +50,10 @@ public class Chat {
         }
     }
 
-    private void setup() throws IOException {
-        readPhrasesFromSourceFile();
-        openInputStream(System.in);
-    }
-
     private void readPhrasesFromSourceFile() throws IOException {
         try (BufferedReader in = new BufferedReader(new FileReader(sourceFile))) {
             in.lines().forEach(phrases::add);
         }
-    }
-
-    private void openInputStream(InputStream input) {
-        this.input = new BufferedReader(new InputStreamReader(input));
-    }
-
-    private String readFromInput() throws IOException {
-        return input.readLine();
     }
 
     private void writeToLog(String line) {
@@ -76,15 +62,6 @@ public class Chat {
 
     private String reply() {
         return phrases.get(new Random().nextInt(phrases.size()));
-    }
-
-    private void writeToOutput(String line) {
-        System.out.println(line);
-    }
-
-    private void tearDown() throws IOException {
-        input.close();
-        writeLogToFile();
     }
 
     private void writeLogToFile() throws IOException {
