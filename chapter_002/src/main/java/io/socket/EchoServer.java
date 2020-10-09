@@ -1,11 +1,16 @@
 package io.socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.*;
 import java.util.Objects;
 
 public class EchoServer {
-    public static void main(String[] args) throws IOException {
+    private static final Logger LOG = LoggerFactory.getLogger(EchoServer.class.getName());
+
+    public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(9000)) {
             System.out.println("Server is running...\n");
             while (true) {
@@ -25,6 +30,12 @@ public class EchoServer {
                 }
             }
             System.out.println("\nServer is locked down");
+        }
+        catch (IOException exc) {
+            LOG.error("Socket IO exception", exc);
+        }
+        catch (Exception exc) {
+            LOG.error("Unexpected exception", exc);
         }
     }
 
