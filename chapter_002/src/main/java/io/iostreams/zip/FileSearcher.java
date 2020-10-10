@@ -13,8 +13,8 @@ class FileSearcher extends SimpleFileVisitor<Path> {
     private final Predicate<Path> predicate;
     private final List<Path> paths = new ArrayList<>();
 
-    public FileSearcher(String extension) {
-        this.predicate = extension == null ? null : path -> path.toString().endsWith(extension);
+    public FileSearcher(Predicate<Path> predicate) {
+        this.predicate = predicate;
     }
 
     public List<Path> getPaths() {
@@ -23,7 +23,7 @@ class FileSearcher extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        if (predicate == null || !predicate.test(file)) {
+        if (predicate != null && predicate.test(file)) {
             paths.add(file);
         }
         return FileVisitResult.CONTINUE;

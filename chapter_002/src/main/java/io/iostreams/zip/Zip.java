@@ -19,7 +19,7 @@ public class Zip {
     }
 
     public void packDirectory(Path sourceDir, Path targetFile, String toExclude) throws IOException {
-        FileSearcher searcher = new FileSearcher(toExclude);
+        FileSearcher searcher = new FileSearcher(toExclude == null ? null : e -> !e.toString().endsWith(toExclude));
         Files.walkFileTree(sourceDir, searcher);
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(targetFile.toFile()))) {
             for (Path src : searcher.getPaths()) {
