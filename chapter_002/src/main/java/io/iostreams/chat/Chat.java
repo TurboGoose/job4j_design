@@ -23,13 +23,13 @@ public class Chat {
             while (!isEnded()) {
                 String message = in.readLine();
                 writeToLog(message);
-                if (isStopWord(message)) {
+                if ("stop".equals(message)) {
                     stopChat();
                 }
-                else if (isContinueWord(message)) {
+                else if ("continue".equals(message)) {
                     continueChat();
                 }
-                else if (isEndWord(message)) {
+                else if ("end".equals(message)) {
                     endChat();
                 }
                 else if (isActive()) {
@@ -40,12 +40,7 @@ public class Chat {
             }
             writeLogToFile();
         }
-        catch (IOException exc) {
-            System.out.println(">>> IO exception:\n\t" + exc.getMessage());
-            exc.printStackTrace();
-        }
         catch (Exception exc) {
-            System.out.println(">>> Unexpected exception:\n\t" + exc.getMessage());
             exc.printStackTrace();
         }
     }
@@ -68,18 +63,6 @@ public class Chat {
         try (PrintWriter out = new PrintWriter(new FileWriter(logFile, true))) {
             log.forEach(out::println);
         }
-    }
-
-    private boolean isStopWord(String word) {
-        return Objects.equals(word, "stop");
-    }
-
-    private boolean isContinueWord(String word) {
-        return Objects.equals(word, "continue");
-    }
-
-    private boolean isEndWord(String word) {
-        return Objects.equals(word, "end");
     }
 
     private boolean isEnded() {
