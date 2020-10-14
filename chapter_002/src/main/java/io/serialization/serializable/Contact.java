@@ -1,4 +1,4 @@
-package io.serialization;
+package io.serialization.serializable;
 
 import java.io.*;
 import java.nio.file.Files;
