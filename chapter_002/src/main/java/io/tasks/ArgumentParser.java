@@ -1,4 +1,4 @@
-package io.searchfiles;
+package io.tasks;
 
 import java.util.Arrays;
 import java.util.Iterator;
