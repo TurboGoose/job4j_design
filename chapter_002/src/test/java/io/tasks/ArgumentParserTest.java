@@ -12,7 +12,7 @@ class ArgumentParserTest {
     public void normalUse() {
         ArgumentParser parser = new ArgumentParser("-d c:/ -n *.txt -m -o log.txt".split(" "));
         assertThat(parser.isValid(), is(true));
-        assertThat(parser.getFileName(), is("*.txt"));
+        assertThat(parser.getSearchExpression(), is("*.txt"));
         assertThat(parser.getOutputFile(), is("log.txt"));
         assertThat(parser.getSearchDirectory(), is("c:/"));
         assertThat(parser.getSearchOption(), is(ArgumentParser.SearchOption.MASK));
@@ -22,7 +22,7 @@ class ArgumentParserTest {
     public void parseEmptyArguments() {
         ArgumentParser parser = new ArgumentParser(new String[0]);
         assertThat(parser.isValid(), is(false));
-        assertThrows(UnsupportedOperationException.class, parser::getFileName);
+        assertThrows(UnsupportedOperationException.class, parser::getSearchExpression);
         assertThrows(UnsupportedOperationException.class, parser::getOutputFile);
         assertThrows(UnsupportedOperationException.class, parser::getSearchDirectory);
         assertThrows(UnsupportedOperationException.class, parser::getSearchOption);

@@ -10,7 +10,7 @@ public class ArgumentParser {
     private SearchOption searchOption;
     private String searchDirectory;
     private String outputFile;
-    private String fileName;
+    private String searchExpression;
     private boolean valid;
 
     public ArgumentParser(String[] args) {
@@ -33,10 +33,10 @@ public class ArgumentParser {
                         searchDirectory = it.next();
                     }
                     case "-n" -> {
-                        if (fileName != null) {
+                        if (searchExpression != null) {
                             return false;
                         }
-                        fileName = it.next();
+                        searchExpression = it.next();
                     }
                     case "-o" -> {
                         if (outputFile != null) {
@@ -62,7 +62,7 @@ public class ArgumentParser {
             }
         }
         return searchDirectory != null && outputFile != null &&
-                fileName != null && searchOption != null;
+                searchExpression != null && searchOption != null;
     }
 
     public boolean isValid() {
@@ -90,10 +90,10 @@ public class ArgumentParser {
         return outputFile;
     }
 
-    public String getFileName() {
+    public String getSearchExpression() {
         if (!valid) {
             throw new UnsupportedOperationException();
         }
-        return fileName;
+        return searchExpression;
     }
 }
