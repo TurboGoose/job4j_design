@@ -1,4 +1,4 @@
-package io.tasks;
+package io.tasks.filesearcher;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

@@ -1,4 +1,4 @@
-package io.tasks;
+package io.tasks.filesearcher;
 
 import java.nio.file.Path;
 import java.util.function.Predicate;

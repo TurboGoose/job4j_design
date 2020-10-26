@@ -1,4 +1,4 @@
-package io.tasks;
+package io.tasks.filesearcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

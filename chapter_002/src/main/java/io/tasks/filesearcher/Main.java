@@ -1,4 +1,4 @@
-package io.tasks;
+package io.tasks.filesearcher;
 
 public class Main {
     public static void main(String[] args) {
