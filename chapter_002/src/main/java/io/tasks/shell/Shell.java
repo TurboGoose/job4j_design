@@ -1,50 +1,60 @@
 package io.tasks.shell;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class Shell {
-    private String currentDir = "/";
+    private UnixPath currentPath = new UnixPath("/");
 
     public void cd(String path) {
-        if (UnixPath.isAbsolute(path)) {
-            currentDir = UnixPath.normalize(path);
-        }
-        else {
-            currentDir = UnixPath.normalize(UnixPath.merge(currentDir, path));
+        UnixPath newPath = new UnixPath(path);
+        if (newPath.isAbsolute()) {
+            currentPath = newPath.normalize();
+        } else {
+            currentPath.resolve(newPath).normalize();
         }
     }
 
     public String pwd() {
-        return currentDir;
+        return currentPath.toString();
     }
 }
 
 class UnixPath {
-    public static boolean isAbsolute(String path) {
-        return path.startsWith("/");
+    private final List<String> dirs;
+    private final boolean absolute;
+
+    public UnixPath(String path) {
+        absolute = path.startsWith("/");
+        dirs = new ArrayList<>(Arrays.asList(path.split("/")));
     }
 
-    public static String normalize(String path) {
+    public boolean isAbsolute() {
+        return absolute;
+    }
+
+    public UnixPath normalize() {
         Deque<String> stack = new ArrayDeque<>();
-        for (String dir : path.split("/")) {
+        for (String dir : dirs) {
             if (".".equals(dir) || dir.isEmpty()) {
                 continue;
-            }
-            else if ("..".equals(dir)) {
+            } else if ("..".equals(dir)) {
                 stack.pop();
-            }
-            else {
+            } else {
                 stack.push(dir);
             }
         }
-        return "/" + stack.stream().sorted(Collections.reverseOrder()).collect(Collectors.joining("/"));
+        dirs.clear();
+        stack.stream().sorted(Collections.reverseOrder()).forEach(dirs::add);
+        return this;
     }
 
+    public UnixPath resolve(UnixPath unixPath) {
+        dirs.addAll(unixPath.dirs);
+        return this;
+    }
 
-    public static String merge(String prefix, String suffix) {
-        return prefix + "/" + suffix;
+    @Override
+    public String toString() {
+        return (absolute ? "/" : "") + String.join("/", dirs);
     }
 }
