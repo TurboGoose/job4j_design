@@ -1,5 +1,7 @@
 package GCDemo;
 
+import static com.carrotsearch.sizeof.RamUsageEstimator.sizeOf;
+
 public class Person {
     private int id;
     private String name;
@@ -27,9 +29,21 @@ public class Person {
         this.name = name;
     }
 
+    public long size() {
+        return sizeOf(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}' + "[size: " + size() + "]";
+    }
+
     @Override
     protected void finalize() throws Throwable {
-        System.out.printf("Removed Person {id=%d, name=%s}%n", id, name);
+        System.out.println("Removed " + this);
         personsAlive--;
     }
 }

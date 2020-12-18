@@ -5,7 +5,7 @@ public class GCDemo {
     private static final Runtime ENV = Runtime.getRuntime();
 
     public static void info() {
-        System.out.printf("%n=== Environment state ===%nFree: %d%nTotal: %d%nMax: %d%nPersons alive: %d%n%n",
+        System.out.printf("%n=== Environment state ===%nFree: %d; Total: %d; Max: %d; Persons alive: %d%n%n",
                 ENV.freeMemory() / MB,
                 ENV.totalMemory() / MB,
                 ENV.maxMemory() / MB,
@@ -14,10 +14,11 @@ public class GCDemo {
     }
 
     public static void main(String[] args) {
-        info();
         for (int i = 0; i < 10000; i++) {
-            new Person(i, "P" + i);
+            System.out.println(new Person(i, "P" + i + 1));
         }
+        info();
+        System.out.println("Before calling GC");
         System.gc();
         info();
     }
