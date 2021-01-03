@@ -1,4 +1,4 @@
-package GCDemo;
+package gc;
 
 import static com.carrotsearch.sizeof.RamUsageEstimator.sizeOf;
 
