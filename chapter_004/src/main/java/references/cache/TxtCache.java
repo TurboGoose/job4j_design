@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TxtCache {
-    private final Cache<String, String> cache = new Cache<>();
+    private final Cache<String, String> cache = new AbstractCache<>();
 
     public String getContent(String filename) throws IOException {
         String result = cache.get(filename);
