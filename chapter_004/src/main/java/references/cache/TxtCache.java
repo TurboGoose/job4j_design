@@ -19,7 +19,7 @@ public class TxtCache {
 
     public String loadFile(String filename) throws IOException {
         String content = loadContent(filename);
-        cache.load(filename, content);
+        cache.put(filename, content);
         return content;
     }
 

@@ -1,6 +1,8 @@
 package references.cache;
 
 import org.junit.jupiter.api.Test;
+
+import java.lang.ref.SoftReference;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,17 +17,17 @@ class AbstractCacheTest {
 
     @Test
     public void getExistingKeyThenReturnValue() {
-        Map<String, String> content = Map.of("key", "value");
-        AbstractCacheForTest<String, String> cache = new AbstractCacheForTest<>(content);
+        AbstractCacheForTest<String, String> cache =
+                new AbstractCacheForTest<>(Map.of("key", new SoftReference<>("value")));
         assertThat(cache.get("key"), is("value"));
     }
 
     @Test
     public void loadCacheThenCheckEntryInMap() {
         AbstractCacheForTest<String, String> cache = new AbstractCacheForTest<>();
-        cache.load("key", "value");
-        Map<String, String> actual = cache.getMap();
+        cache.put("key", "value");
+        Map<String, SoftReference<String>> actual = cache.getMap();
         assertThat(actual.containsKey("key"), is(true));
-        assertThat(actual.get("key"), is("value"));
+        assertThat(actual.get("key").get(), is("value"));
     }
 }
