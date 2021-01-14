@@ -1,5 +1,6 @@
 package tdd.cinema;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tdd.cinema.impls.AccountCinema;
 import tdd.cinema.impls.Cinema3D;
@@ -13,6 +14,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Disabled
 class CinemaTest {
     @Test
     public void whenBuyTicketThenReturnTicket() {

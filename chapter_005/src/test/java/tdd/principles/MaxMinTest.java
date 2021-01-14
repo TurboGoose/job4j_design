@@ -1,5 +1,6 @@
 package tdd.principles;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Disabled
 class MaxMinTest {
     public MaxMin maxMin = new MaxMin();
 
