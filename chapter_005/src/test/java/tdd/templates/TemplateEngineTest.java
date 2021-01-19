@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Disabled
 class TemplateEngineTest {
     @Test
-    public void produce_WithoutArguments_StringWithoutChanges() {
+    public void whenStringWithoutArgumentsReturnStringWithoutChanges() {
         TemplateEngine engine = new TemplateEngine();
         String template = "Hello!";
         assertThat(engine.produce(template, Collections.emptyMap()), is(template));
     }
 
     @Test
-    public void produce_OneArgument_FormattedString() {
+    public void whenOneArgumentReturnFormattedString() {
         TemplateEngine engine = new TemplateEngine();
         String template = "Hello, ${user}!";
         Map<String, String> values = Map.of("user", "Anton");
@@ -28,7 +28,7 @@ class TemplateEngineTest {
     }
 
     @Test
-    public void produce_OneArgumentUsedTwoTimes_FormattedString() {
+    public void whenOneArgumentUsedTwoTimesReturnFormattedString() {
         TemplateEngine engine = new TemplateEngine();
         String template = "Is your name ${user}? Hello, ${user}!";
         Map<String, String> values = Map.of("user", "Anton");
@@ -36,7 +36,7 @@ class TemplateEngineTest {
     }
 
     @Test
-    public void produce_UnusedArgumentsInMap_ThrowIllegalArgumentException() {
+    public void whenUnusedArgumentsInMapThrowIllegalArgumentException() {
         TemplateEngine engine = new TemplateEngine();
         String template = "Is your name ${user}? Hello, ${user}!";
         Map<String, String> values = Map.of("user", "Anton", "city", "Moscow");
@@ -44,7 +44,7 @@ class TemplateEngineTest {
     }
 
     @Test
-    public void produce_UnexpectedArgumentInTemplate_ThrowIllegalArgumentException() {
+    public void whenUnexpectedArgumentInTemplateThrowIllegalArgumentException() {
         TemplateEngine engine = new TemplateEngine();
         String template = "Hello, ${user}! Are you live in ${city}?";
         Map<String, String> values = Map.of("user", "Anton");
