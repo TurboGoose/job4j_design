@@ -2,20 +2,21 @@ package solid.lsp.productwarehouse.storages;
 
 import solid.lsp.productwarehouse.products.Food;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
-public class Shop implements Storage {
-    private final List<Food> store = new ArrayList<>();
-
+public class Shop extends AbstractStorage {
     @Override
-    public void put(Food food) {
-        if (food != null) {
-            store.add(food);
+    public void add(Food food) {
+        double expiryPercent = food.calculateExpiryPercent(LocalDate.now());
+        if (expiryPercent > 0.75) {
+            food.setDiscount(0.2);
         }
+        store.add(food);
     }
 
-    public List<Food> getStore() {
-        return store;
+    @Override
+    public boolean accept(Food food) {
+        double expiryPercent = food.calculateExpiryPercent(LocalDate.now());
+        return expiryPercent > 0.25 && expiryPercent < 1;
     }
 }
