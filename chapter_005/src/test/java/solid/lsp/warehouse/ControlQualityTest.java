@@ -1,11 +1,11 @@
-package solid.lsp.productwarehouse;
+package solid.lsp.warehouse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import solid.lsp.productwarehouse.products.Bread;
-import solid.lsp.productwarehouse.storages.Shop;
-import solid.lsp.productwarehouse.storages.Trash;
-import solid.lsp.productwarehouse.storages.Warehouse;
+import solid.lsp.warehouse.products.Bread;
+import solid.lsp.warehouse.storages.Shop;
+import solid.lsp.warehouse.storages.Trash;
+import solid.lsp.warehouse.storages.Warehouse;
 
 import java.time.LocalDate;
 

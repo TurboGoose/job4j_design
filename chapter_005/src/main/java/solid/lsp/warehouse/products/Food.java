@@ -1,4 +1,4 @@
-package solid.lsp.productwarehouse.products;
+package solid.lsp.warehouse.products;
 
 import java.time.LocalDate;
 import java.util.Objects;

@@ -1,6 +1,6 @@
-package solid.lsp.productwarehouse.storages;
+package solid.lsp.warehouse.storages;
 
-import solid.lsp.productwarehouse.products.Food;
+import solid.lsp.warehouse.products.Food;
 
 import java.util.List;
 
