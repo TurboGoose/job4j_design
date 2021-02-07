@@ -1,4 +1,4 @@
-package solid.isp;
+package solid.isp.menu;
 
 public interface Action {
     void execute();

@@ -1,4 +1,4 @@
-package solid.isp;
+package solid.isp.menu;
 
 import java.util.*;
 import java.util.function.Consumer;

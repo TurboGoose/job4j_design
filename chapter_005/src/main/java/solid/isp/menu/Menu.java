@@ -1,4 +1,4 @@
-package solid.isp;
+package solid.isp.menu;
 
 public class Menu {
     private final Tree<MenuItem> tree;

@@ -1,4 +1,4 @@
-package solid.isp;
+package solid.isp.menu;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,14 +9,14 @@ class MenuTest {
     @Test
     public void whenRenderMenu() {
         Menu menu = new Menu(createTree());
-        String expected =
-                "node1\r\n" +
-                "---- node2\r\n" +
-                "-------- node3\r\n" +
-                "-------- node4\r\n" +
-                "---- node5\r\n" +
-                "-------- node6\r\n" +
-                "node7\r\n";
+        String expected = String.format(
+                "node1%n" +
+                "---- node2%n" +
+                "-------- node3%n" +
+                "-------- node4%n" +
+                "---- node5%n" +
+                "-------- node6%n" +
+                "node7%n");
         String actual = menu.toString();
         assertThat(actual, is(expected));
     }
