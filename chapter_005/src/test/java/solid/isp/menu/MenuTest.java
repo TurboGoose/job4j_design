@@ -39,4 +39,15 @@ class MenuTest {
         node7.setParent(root);
         return new Tree<>(root);
     }
+
+    @Test
+    public void whenGetAction() {
+        Action action = () -> System.out.println("Node 1 action");
+        Node<MenuItem> root = new Node<>(new MenuItem("root"));
+        Node<MenuItem> node1 = new Node<>(new MenuItem("node1", action));
+        node1.setParent(root);
+        Tree<MenuItem> tree = new Tree<>(root);
+        Menu menu = new Menu(tree);
+        assertThat(menu.getAction("node1"), is(action));
+    }
 }

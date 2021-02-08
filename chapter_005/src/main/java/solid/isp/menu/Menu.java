@@ -1,5 +1,7 @@
 package solid.isp.menu;
 
+import java.util.Objects;
+
 public class Menu {
     private final Tree<MenuItem> tree;
 
@@ -20,5 +22,17 @@ public class Menu {
 
     private String levelSeparator(int level) {
         return level <= 0 ? "" : ("----".repeat(level) + " ");
+    }
+
+    public Action getAction(String itemName) {
+        Action result = null;
+        for (Node<MenuItem> child : tree.getRootNode().getChildren()) {
+            MenuItem menuItem = new Tree<>(child).search(item -> Objects.equals(itemName, item.getTitle()));
+            if (menuItem != null) {
+                result = menuItem.getAction();
+                break;
+            }
+        }
+        return result;
     }
 }
