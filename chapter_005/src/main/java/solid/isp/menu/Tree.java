@@ -22,8 +22,10 @@ public class Tree<T> {
             Node<T> element = stack.pop();
             action.accept(element);
             List<Node<T>> children = element.getChildren();
-            Collections.reverse(children);
-            children.forEach(stack::push);
+            ListIterator<Node<T>> iter = children.listIterator(children.size());
+            while (iter.hasPrevious()) {
+                stack.push(iter.previous());
+            }
         }
     }
 
@@ -39,8 +41,10 @@ public class Tree<T> {
                 break;
             }
             List<Node<T>> children = element.getChildren();
-            Collections.reverse(children);
-            children.forEach(stack::push);
+            ListIterator<Node<T>> iter = children.listIterator(children.size());
+            while (iter.hasPrevious()) {
+                stack.push(iter.previous());
+            }
         }
         return result;
     }
