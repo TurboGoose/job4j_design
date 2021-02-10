@@ -1,4 +1,4 @@
-package solid.lsp.parking;
+package solid.lsp.parking.vehicles;
 
 public class Truck extends Vehicle implements Parkable {
     private final int dimensions;
