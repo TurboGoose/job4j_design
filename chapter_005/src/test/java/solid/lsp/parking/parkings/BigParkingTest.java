@@ -1,5 +1,6 @@
 package solid.lsp.parking.parkings;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import solid.lsp.parking.vehicles.Car;
 import solid.lsp.parking.vehicles.Parkable;
@@ -9,7 +10,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 class BigParkingTest {
+
     @Test
     public void whenParkingCarThenSuccess() {
         Parking parking = new BigParking(1, 2);
