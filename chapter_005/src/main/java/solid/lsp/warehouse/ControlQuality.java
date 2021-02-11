@@ -13,6 +13,16 @@ public class ControlQuality {
         storages.add(storage);
     }
 
+    public void resort() {
+        extractFoodFromStorages().forEach(this::distribute);
+    }
+
+    private List<Food> extractFoodFromStorages() {
+        List<Food> allFood = new ArrayList<>();
+        storages.forEach(storage -> allFood.addAll(storage.clear()));
+        return allFood;
+    }
+
     public void distribute(Food food) {
         for (Storage storage : storages) {
             if (storage.accept(food)) {
