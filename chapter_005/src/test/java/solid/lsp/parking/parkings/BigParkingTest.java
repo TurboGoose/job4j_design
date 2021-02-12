@@ -1,6 +1,5 @@
 package solid.lsp.parking.parkings;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import solid.lsp.parking.vehicles.Car;
 import solid.lsp.parking.vehicles.Parkable;
@@ -8,9 +7,7 @@ import solid.lsp.parking.vehicles.Truck;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 class BigParkingTest {
 
     @Test
@@ -59,13 +56,13 @@ class BigParkingTest {
     @Test
     public void whenRemovingNonexistentCarThenFail() {
         Parking parking = new BigParking(1, 1);
-        assertThrows(IllegalArgumentException.class, () -> parking.remove(new Car()));
+        assertThat(parking.remove(new Car()), is(false));
     }
 
     @Test
     public void whenRemovingNonexistentTruckThenFail() {
         Parking parking = new BigParking(1, 1);
-        assertThrows(IllegalArgumentException.class, () -> parking.remove(new Truck(2)));
+        assertThat(parking.remove(new Truck(2)), is(false));
     }
 
     @Test

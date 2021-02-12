@@ -13,16 +13,17 @@ public class BigParking implements Parking {
 
     @Override
     public boolean park(Parkable parkable) {
-        return false;
+        return truckParking.park(parkable) || carParking.park(parkable);
+
     }
 
     @Override
     public boolean remove(Parkable parkable) {
-        return false;
+        return carParking.remove(parkable) || truckParking.remove(parkable);
     }
 
     @Override
     public boolean isParked(Parkable parkable) {
-        return false;
+        return carParking.isParked(parkable) || truckParking.isParked(parkable);
     }
 }
